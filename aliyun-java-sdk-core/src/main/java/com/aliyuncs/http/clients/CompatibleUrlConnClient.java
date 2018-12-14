@@ -133,6 +133,7 @@ public class CompatibleUrlConnClient extends IHttpClient {
         }
 
         httpConn.setRequestMethod(request.getMethod().toString());
+        httpConn.setInstanceFollowRedirects(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);
         httpConn.setUseCaches(false);

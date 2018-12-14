@@ -118,21 +118,21 @@ public abstract class RpcAcsRequest<T extends AcsResponse> extends AcsRequest<T>
     @Override
     public HttpRequest signRequest(Signer signer, AlibabaCloudCredentials credentials,
                                    FormatType format, ProductDomain domain)
-        throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException {
+            throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException {
 
         Map<String, String> imutableMap = new HashMap<String, String>(this.getQueryParameters());
         if (null != signer && null != credentials) {
             String accessKeyId = credentials.getAccessKeyId();
             String accessSecret = credentials.getAccessKeySecret();
             if (credentials instanceof BasicSessionCredentials) {
-                String sessionToken = ((BasicSessionCredentials)credentials).getSessionToken();
+                String sessionToken = ((BasicSessionCredentials) credentials).getSessionToken();
                 if (null != sessionToken) {
                     this.putQueryParameter("SecurityToken", sessionToken);
                 }
             }
             if (credentials instanceof BearerTokenCredentials) {
-                String bearerToken = ((BearerTokenCredentials)credentials).getBearerToken();
-                if (null != ((BearerTokenCredentials)credentials).getBearerToken()) {
+                String bearerToken = ((BearerTokenCredentials) credentials).getBearerToken();
+                if (null != ((BearerTokenCredentials) credentials).getBearerToken()) {
                     this.putQueryParameter("BearerToken", bearerToken);
                 }
             }
@@ -141,12 +141,19 @@ public abstract class RpcAcsRequest<T extends AcsResponse> extends AcsRequest<T>
             Map<String, String> paramsToSign = new HashMap<String, String>(imutableMap);
             Map<String, String> formParams = this.getBodyParameters();
             if (formParams != null && !formParams.isEmpty()) {
-                byte[] data = ParameterHelper.getFormData(formParams);
-                this.setHttpContent(data, "UTF-8", FormatType.FORM);
+                byte[] data;
+                if (FormatType.JSON == this.getHttpContentType()) {
+                    data = ParameterHelper.getJsonData(formParams);
+                } else if (FormatType.XML == this.getHttpContentType()) {
+                    data = ParameterHelper.getXmlData(formParams);
+                } else {
+                    data = ParameterHelper.getFormData(formParams);
+                }
+                this.setHttpContent(data, "UTF-8", this.getHttpContentType());
                 paramsToSign.putAll(formParams);
             }
             String strToSign = this.composer.composeStringToSign(
-                this.getMethod(), null, signer, paramsToSign, null,null);
+                    this.getMethod(), null, signer, paramsToSign, null, null);
 
             String signature;
             if (credentials instanceof KeyPairCredentials) {

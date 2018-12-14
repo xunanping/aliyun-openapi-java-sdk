@@ -18,16 +18,13 @@
  */
 package com.aliyuncs.utils;
 
+import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SimpleTimeZone;
-import java.util.UUID;
+import java.util.*;
 
 public class ParameterHelper {
 
@@ -101,6 +98,24 @@ public class ParameterHelper {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public static byte[] getXmlData(Map<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        Iterator<Map.Entry<String, String>> entries = params.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, String> entry = entries.next();
+            xml.append("<"+entry.getKey()+">");
+            xml.append(entry.getValue());
+            xml.append("</"+entry.getKey()+">");
+        }
+        return xml.toString().getBytes("UTF-8");
+    }
+
+    public static byte[] getJsonData(Map<String, String> params) throws UnsupportedEncodingException {
+        String json = new Gson().toJson(params);
+        return json.getBytes("UTF-8");
     }
 
     public static byte[] getFormData(Map<String, String> params) throws UnsupportedEncodingException {

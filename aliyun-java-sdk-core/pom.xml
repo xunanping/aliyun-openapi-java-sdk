@@ -4,7 +4,7 @@
     <groupId>com.aliyun</groupId>
     <artifactId>aliyun-java-sdk-core</artifactId>
     <packaging>jar</packaging>
-    <version>4.2.2</version>
+    <version>4.2.3</version>
     <name>aliyun-java-sdk-core</name>
     <url>http://www.aliyun.com</url>
     <description>Aliyun Open API SDK for Java
@@ -41,6 +41,7 @@
         <developerConnection>scm:git:git@github.com:aliyun/aliyun-openapi-java-sdk.git</developerConnection>
         <url>https://github.com/aliyun/aliyun-openapi-java-sdk</url>
     </scm>
+
     <developers>
         <developer>
             <id>aliyunproducts</id>
@@ -88,6 +89,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -138,6 +140,25 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

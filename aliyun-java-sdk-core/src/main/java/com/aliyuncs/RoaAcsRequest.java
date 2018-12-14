@@ -138,12 +138,19 @@ public abstract class RoaAcsRequest<T extends AcsResponse> extends AcsRequest<T>
     @Override
     public HttpRequest signRequest(Signer signer, AlibabaCloudCredentials credentials,
                                    FormatType format, ProductDomain domain)
-        throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException, NoSuchAlgorithmException {
+            throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
         Map<String, String> formParams = this.getBodyParameters();
         if (formParams != null && !formParams.isEmpty()) {
-            byte[] data = ParameterHelper.getFormData(formParams);
-            this.setHttpContent(data, "UTF-8", FormatType.FORM);
+            byte[] data;
+            if (FormatType.JSON == this.getHttpContentType()) {
+                data = ParameterHelper.getJsonData(formParams);
+            } else if (FormatType.XML == this.getHttpContentType()) {
+                data = ParameterHelper.getXmlData(formParams);
+            } else {
+                data = ParameterHelper.getFormData(formParams);
+            }
+            this.setHttpContent(data, "UTF-8", this.getHttpContentType());
         }
 
         Map<String, String> imutableMap = new HashMap<String, String>(this.getHeaders());
@@ -151,19 +158,19 @@ public abstract class RoaAcsRequest<T extends AcsResponse> extends AcsRequest<T>
             String accessKeyId = credentials.getAccessKeyId();
             imutableMap = this.composer.refreshSignParameters(this.getHeaders(), signer, accessKeyId, format);
             if (credentials instanceof BasicSessionCredentials) {
-                String sessionToken = ((BasicSessionCredentials)credentials).getSessionToken();
+                String sessionToken = ((BasicSessionCredentials) credentials).getSessionToken();
                 if (null != sessionToken) {
                     imutableMap.put("x-acs-security-token", sessionToken);
                 }
             }
             if (credentials instanceof BearerTokenCredentials) {
-                String bearerToken = ((BearerTokenCredentials)credentials).getBearerToken();
-                if (null != ((BearerTokenCredentials)credentials).getBearerToken()) {
+                String bearerToken = ((BearerTokenCredentials) credentials).getBearerToken();
+                if (null != ((BearerTokenCredentials) credentials).getBearerToken()) {
                     imutableMap.put("x-acs-bearer-token", bearerToken);
                 }
             }
             String strToSign = this.composer.composeStringToSign(this.getMethod(), this.getUriPattern(), signer,
-                this.getQueryParameters(), imutableMap, this.getPathParameters());
+                    this.getQueryParameters(), imutableMap, this.getPathParameters());
             String signature = signer.signString(strToSign, credentials);
             imutableMap.put("Authorization", "acs " + accessKeyId + ":" + signature);
         }
