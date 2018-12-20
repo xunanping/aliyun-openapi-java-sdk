@@ -1,3 +1,7 @@
+2018-12-20 Version: 4.2.4
+1, Fix SignatureDoesNotMatch 
+2, Put Method automatically sets content type
+
 2018-12-20 Version: 4.2.3
 1, Fix SignatureDoesNotMatch 
 2, Put Method automatically sets content type
