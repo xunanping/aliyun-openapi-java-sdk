@@ -1,3 +1,8 @@
+2018-12-20 Version: 4.2.3
+1, Fix SignatureDoesNotMatch 
+2, Put Method automatically sets content type
+
+
 2018-12-14 Version: 4.2.3
 1, Fix MD5 error caused by PUT
 2, Disable SDK redirect auto jump

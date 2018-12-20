@@ -50,7 +50,6 @@ public class XmlReaderTest {
     public void init() throws ClientException {
         XmlReader xmlReader = new XmlReader();
         map = xmlReader.read(xml, "DescribeInstancesResponse");
-        System.out.println(map);
     }
 
     @Test

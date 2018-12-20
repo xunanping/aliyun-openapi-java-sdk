@@ -77,7 +77,8 @@ public abstract class RoaAcsRequest<T extends AcsResponse> extends AcsRequest<T>
 
     private void initialize() {
         this.composer = RoaSignatureComposer.getComposer();
-        this.setHttpContent(new byte[0], "utf-8", FormatType.RAW);
+        this.setHttpContentType(FormatType.FORM);
+        this.setHttpContent(new byte[0], "utf-8", null);
     }
 
     @Override
@@ -140,17 +141,20 @@ public abstract class RoaAcsRequest<T extends AcsResponse> extends AcsRequest<T>
                                    FormatType format, ProductDomain domain)
             throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        Map<String, String> formParams = this.getBodyParameters();
-        if (formParams != null && !formParams.isEmpty()) {
+        Map<String, String> bodyParams = this.getBodyParameters();
+        if (bodyParams != null && !bodyParams.isEmpty()) {
             byte[] data;
             if (FormatType.JSON == this.getHttpContentType()) {
-                data = ParameterHelper.getJsonData(formParams);
+                data = ParameterHelper.getJsonData(bodyParams);
             } else if (FormatType.XML == this.getHttpContentType()) {
-                data = ParameterHelper.getXmlData(formParams);
+                data = ParameterHelper.getXmlData(bodyParams);
             } else {
-                data = ParameterHelper.getFormData(formParams);
+                // For contentType RAW and Form, the actual data format will be form
+                data = ParameterHelper.getFormData(bodyParams);
             }
-            this.setHttpContent(data, "UTF-8", this.getHttpContentType());
+            this.setHttpContent(data, "UTF-8", null);
+        } else {
+            this.setHttpContentType(FormatType.RAW);
         }
 
         Map<String, String> imutableMap = new HashMap<String, String>(this.getHeaders());

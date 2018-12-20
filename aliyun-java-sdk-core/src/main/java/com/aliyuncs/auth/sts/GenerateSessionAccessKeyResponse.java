@@ -25,10 +25,6 @@ import com.aliyuncs.AcsResponse;
 import com.aliyuncs.transform.UnmarshallerContext;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by zhangw on 2017/8/10.
- */
-
 @XmlRootElement(name="GenerateSessionAccessKeyResponse")
 public class GenerateSessionAccessKeyResponse extends AcsResponse {
 

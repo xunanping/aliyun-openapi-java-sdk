@@ -63,18 +63,18 @@ public class RpcDubboApiRequest extends RpcAcsRequest<RpcDubboApiResponse> {
             imutableMap = this.composer.refreshSignParameters(this.getQueryParameters(), signer, accessKeyId, format);
             imutableMap.put("RegionId", getRegionId());
             Map<String, String> paramsToSign = new HashMap<String, String>(imutableMap);
-            Map<String, String> formParams = this.getBodyParameters();
-            if (formParams != null && !formParams.isEmpty()) {
+            Map<String, String> bodyParams = this.getBodyParameters();
+            if (bodyParams != null && !bodyParams.isEmpty()) {
                 byte[] data;
                 if (FormatType.JSON == this.getHttpContentType()) {
-                    data = ParameterHelper.getJsonData(formParams);
+                    data = ParameterHelper.getJsonData(bodyParams);
                 } else if (FormatType.XML == this.getHttpContentType()) {
-                    data = ParameterHelper.getXmlData(formParams);
+                    data = ParameterHelper.getXmlData(bodyParams);
                 } else {
-                    data = ParameterHelper.getFormData(formParams);
+                    data = ParameterHelper.getFormData(bodyParams);
                 }
                 this.setHttpContent(data, "UTF-8", this.getHttpContentType());
-                paramsToSign.putAll(formParams);
+                paramsToSign.putAll(bodyParams);
             }
             String strToSign = this.composer.composeStringToSign(this.getMethod(), null, signer, paramsToSign, null,
                     null);

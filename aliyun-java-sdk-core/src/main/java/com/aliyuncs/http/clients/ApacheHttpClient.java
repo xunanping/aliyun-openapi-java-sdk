@@ -54,7 +54,6 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLInitializationException;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
@@ -68,10 +67,6 @@ import org.apache.http.util.EntityUtils;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import org.apache.http.ssl.TrustStrategy;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 
 /**
@@ -199,8 +194,7 @@ public class ApacheHttpClient extends IHttpClient {
             String contentType = apiReq.getHeaderValue(CONTENT_TYPE);
             if (StringUtils.isEmpty(contentType)) {
                 contentType = apiReq.getContentTypeValue(apiReq.getHttpContentType(), apiReq.getEncoding());
-            }
-            if (StringUtils.isNotEmpty(contentType)) {
+            } else {
                 bodyBuilder.setContentType(ContentType.parse(contentType));
             }
             bodyBuilder.setBinary(apiReq.getHttpContent());

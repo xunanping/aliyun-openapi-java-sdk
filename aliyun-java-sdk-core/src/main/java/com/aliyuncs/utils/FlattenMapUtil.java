@@ -1,6 +1,10 @@
 package com.aliyuncs.utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FlattenMapUtil {
     public static List<Map<Object, Object>> toListMap(Map<String, String> flattenMap, String prefix) {
@@ -220,7 +224,7 @@ public class FlattenMapUtil {
         for (int i = 0;i < sequences.length; i ++) {
             sb.append(sequences[i]);
             if (i < sequences.length - 1) {
-                sb.append(".");
+                sb.append(delimiter);
             }
         }
         return sb.toString();

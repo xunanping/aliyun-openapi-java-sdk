@@ -22,10 +22,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.aliyuncs.auth.AlibabaCloudCredentials;
@@ -46,6 +43,7 @@ import com.aliyuncs.reader.Reader;
 import com.aliyuncs.reader.ReaderFactory;
 import com.aliyuncs.regions.ProductDomain;
 import com.aliyuncs.transform.UnmarshallerContext;
+import com.aliyuncs.unmarshaller.Unmarshaller;
 import com.aliyuncs.unmarshaller.UnmarshallerFactory;
 import com.aliyuncs.utils.IOUtils;
 
@@ -59,8 +57,6 @@ public class DefaultAcsClient implements IAcsClient {
     private AlibabaCloudCredentialsProvider credentialsProvider;
     private IHttpClient httpClient;
     private EndpointResolver endpointResolver;
-
-    private SSLSocketFactory sslSocketFactory = null;
 
     @Deprecated
     public DefaultAcsClient() {
@@ -287,8 +283,8 @@ public class DefaultAcsClient implements IAcsClient {
         throws ClientException {
         // new version response contains "@XmlRootElement" annotation
         if (clasz.isAnnotationPresent(XmlRootElement.class) && !clientProfile.getHttpClientConfig().isCompatibleMode()) {
-            com.aliyuncs.unmarshaller.Unmarshaller unmarshaller = UnmarshallerFactory.getUnmarshaller(format);
-            return unmarshaller.unmarshal(clasz, httpResponse);
+            Unmarshaller unmarshaller = UnmarshallerFactory.getUnmarshaller(format);
+            return unmarshaller.unmarshal(clasz, httpResponse.getHttpContentString());
         } else {
             Reader reader = ReaderFactory.createInstance(format);
             UnmarshallerContext context = new UnmarshallerContext();

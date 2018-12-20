@@ -89,6 +89,10 @@ public abstract class HttpMessage {
 
     public void setMethod(MethodType method) {
         this.method = method;
+        //This is the pop rule and the put method accepts only json data
+        if (MethodType.PUT == method) {
+            setHttpContentType(FormatType.JSON);
+        }
     }
 
     public byte[] getHttpContent() {
@@ -134,14 +138,8 @@ public abstract class HttpMessage {
         this.encoding = encoding;
         String contentLen = String.valueOf(content.length);
         String strMd5 = ParameterHelper.md5Sum(content);
-        if (null != format) {
-            this.httpContentType = format;
-        } else {
-            this.httpContentType = FormatType.RAW;
-        }
         this.headers.put(CONTENT_MD5, strMd5);
         this.headers.put(CONTENT_LENGTH, contentLen);
-        this.headers.put(CONTENT_TYPE, getContentTypeValue(httpContentType, encoding));
     }
 
     public Map<String, String> getHeaders() {

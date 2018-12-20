@@ -33,7 +33,7 @@ import com.aliyuncs.http.FormatType;
 
 @SuppressWarnings("unchecked")
 public class AuthTest {
-   
+
     @Test
     public void testRPCComposer() {
         Signer signer = new HmacSHA1Signer();
